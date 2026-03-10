@@ -1,16 +1,5 @@
 # ARV Estimation & Property Comparison Platform
 
-> An AI-powered, fully open-source platform for After-Repair Value (ARV) estimation and property comparison, targeting the San Francisco real estate market.
-
-![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?logo=fastapi)
-![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)
-
----
-
-## Overview
-
 This platform provides real estate investors and analysts with automated ARV estimates backed by comparable sales data, ML regression models, and AI-generated property narratives. The entire stack is containerized, production-ready, and built exclusively on open-source tools.
 
 **Key capabilities:**
