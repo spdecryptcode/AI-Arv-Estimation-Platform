@@ -1,0 +1,29 @@
+# format version omitted; top-level services go here
+
+services:
+  auth_service:
+    volumes:
+      - ./services/auth_service:/app
+      - ./common:/app/common
+      - ./data:/app/data:ro
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+
+  property_service:
+    volumes:
+      - ./services/property_service:/app
+      - ./common:/app/common
+      - ./data:/app/data:ro
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
+
+  ml_service:
+    volumes:
+      - ./services/ml_service:/app
+      - ./services/ml_service/models:/app/models
+      - ./common:/app/common
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload
+
+  report_service:
+    volumes:
+      - ./services/report_service:/app
+      - ./common:/app/common
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8004 --reload

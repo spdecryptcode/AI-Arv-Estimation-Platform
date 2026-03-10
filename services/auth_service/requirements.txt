@@ -1,0 +1,20 @@
+fastapi
+uvicorn
+sqlalchemy[asyncio]
+asyncpg
+alembic
+python-jose
+passlib[bcrypt]
+prometheus-fastapi-instrumentator
+redis
+celery[redis]
+python-dotenv
+psycopg2-binary
+email-validator
+argon2-cffi
+
+# testing deps
+pytest
+httpx
+pytest-asyncio
+meilisearch

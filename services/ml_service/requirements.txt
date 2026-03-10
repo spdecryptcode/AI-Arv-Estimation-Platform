@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+celery[redis]
+python-dotenv
+pydantic
+# add any ML libs later (e.g., scikit-learn)
+
+# cryptography for JWT
+python-jose
+prometheus-fastapi-instrumentator
+
+# testing dependencies
+pytest
+httpx
+pytest-asyncio

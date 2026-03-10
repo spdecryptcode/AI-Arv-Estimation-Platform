@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+sqlalchemy[asyncio]
+asyncpg
+alembic
+redis
+celery[redis]
+python-dotenv
+psycopg2-binary
+meilisearch
+python-jose
+prometheus-fastapi-instrumentator
+
+# testing dependencies
+pytest
+httpx
+pytest-asyncio

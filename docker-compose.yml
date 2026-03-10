@@ -1,0 +1,144 @@
+# the compose file format version is implicit in modern Docker Compose
+services:
+  auth_service:
+    build: ./services/auth_service
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      - postgres
+      - redis
+
+  property_service:
+    build: ./services/property_service
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379/1
+      - MEILI_URL=${MEILI_URL}
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      - postgres
+      - redis
+
+  ml_service:
+    build: ./services/ml_service
+    ports:
+      - "8003:8003"
+    environment:
+      - REDIS_URL=redis://redis:6379/2
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - MODEL_STORE_PATH=/app/models
+    depends_on:
+      - redis
+    volumes:
+      - model_store:/app/models
+
+  report_service:
+    build: ./services/report_service
+    ports:
+      - "8004:8004"
+    environment:
+      - REDIS_URL=redis://redis:6379/3
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - REPORT_OUTPUT_PATH=/app/report_output
+    depends_on:
+      - redis
+    volumes:
+      - report_output:/app/report_output
+
+  celery_report_worker:
+    build: ./services/report_service
+    command: celery -A common.celery_app.celery worker --loglevel=info -Q reports
+    environment:
+      - REDIS_URL=redis://redis:6379/3
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - REPORT_OUTPUT_PATH=/app/report_output
+    depends_on:
+      - redis
+    volumes:
+      - ./services/report_service:/app
+      - ./common:/app/common
+      - report_output:/app/report_output
+
+  celery_ml_worker:
+    build: ./services/ml_service
+    command: celery -A common.celery_app.celery worker --loglevel=info -Q ml
+    environment:
+      - REDIS_URL=redis://redis:6379/2
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - MODEL_STORE_PATH=/app/models
+    depends_on:
+      - redis
+    volumes:
+      - ./services/ml_service:/app
+      - ./common:/app/common
+      - model_store:/app/models
+
+  celery_beat:
+    build: ./services/ml_service
+    command: celery -A common.celery_app.celery beat --loglevel=info
+    environment:
+      - REDIS_URL=redis://redis:6379/2
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - MODEL_STORE_PATH=/app/models
+    depends_on:
+      - redis
+    volumes:
+      - ./services/ml_service:/app
+      - ./common:/app/common
+      - model_store:/app/models
+
+  postgres:
+    image: postgis/postgis:15-3.3
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-arv}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.5
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-masterKey}
+    volumes:
+      - meili_data:/data.ms
+
+  celery_worker:
+    build: ./services/auth_service
+    command: celery -A common.celery_app.celery worker --loglevel=info
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379/0
+      - MEILI_URL=http://meilisearch:7700
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-masterKey}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      - redis
+      - postgres
+      - meilisearch
+    volumes:
+      - ./services/auth_service:/app
+      - ./common:/app/common
+      - ./data:/app/data:ro
+
+volumes:
+  postgres_data:
+  redis_data:
+  meili_data:
+  model_store:
+  report_output:

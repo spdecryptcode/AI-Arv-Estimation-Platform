@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-dotenv
+celery[redis]
+prometheus-fastapi-instrumentator
+python-jose
+reportlab
+# use reportlab or weasyprint for real PDFs (omitted for simplicity)
+
+# testing deps
+pytest
+httpx
+pytest-asyncio
