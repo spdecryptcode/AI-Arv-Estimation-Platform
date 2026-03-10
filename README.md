@@ -6,7 +6,6 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?logo=fastapi)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)
-![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
