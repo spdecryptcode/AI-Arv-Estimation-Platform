@@ -167,18 +167,3 @@ make beat         # Start the Celery beat scheduler (model retraining)
 | [Operating Guide](docs/operating.md) | Day-to-day operations |
 
 ---
-
-## Contributing
-
-Contributions are welcome! Please read [CONTRIBUTING](docs/contributing.md) before opening a pull request.
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit your changes: `git commit -m 'Add my feature'`
-4. Push and open a Pull Request
-
----
-
-## License
-
-This project is licensed under the MIT License.
